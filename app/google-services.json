@@ -1,0 +1,84 @@
+{
+  "project_info": {
+    "project_number": "919876712445",
+    "project_id": "myautohouse-ca877",
+    "storage_bucket": "myautohouse-ca877.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919876712445:android:c08465319b7479f40ccb94",
+        "android_client_info": {
+          "package_name": "eu.brrm.chattestapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919876712445-0nsptirvrpomkc7i925vuidka2s0cvgb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnaId4IsJYXv-lBwPbNIBli8Pw4GoqS-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919876712445-0nsptirvrpomkc7i925vuidka2s0cvgb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "919876712445-h2ea3peuctbb3tpe137lrkodphdheohj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "eu.myautohouse",
+                "app_store_id": "1623362086"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919876712445:android:b7251a6d208cc9430ccb94",
+        "android_client_info": {
+          "package_name": "eu.my.autohouse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919876712445-0nsptirvrpomkc7i925vuidka2s0cvgb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnaId4IsJYXv-lBwPbNIBli8Pw4GoqS-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919876712445-0nsptirvrpomkc7i925vuidka2s0cvgb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "919876712445-h2ea3peuctbb3tpe137lrkodphdheohj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "eu.myautohouse",
+                "app_store_id": "1623362086"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
