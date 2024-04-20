@@ -1,15 +1,11 @@
 package eu.brrm.chatui.internal.ui
 
-import android.Manifest
-import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.webkit.WebSettings
-import android.webkit.WebView
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -17,29 +13,32 @@ import androidx.lifecycle.lifecycleScope
 import eu.brrm.chatui.R
 import eu.brrm.chatui.internal.bridge.Chat
 import eu.brrm.chatui.internal.bridge.ChatBroadcastReceiver
-import eu.brrm.chatui.internal.bridge.ChatChromeClient
-import eu.brrm.chatui.internal.bridge.ChatWebClient
-import eu.brrm.chatui.internal.bridge.JsInterface
 import eu.brrm.chatui.internal.bridge.NativeInterface
 import eu.brrm.chatui.internal.bridge.NativeInterfaceImpl
+import eu.brrm.chatui.internal.data.ChatMessage
 import eu.brrm.chatui.internal.permission.PermissionManager
+import org.json.JSONObject
 
 internal class ChatListActivity : AppCompatActivity() {
 
     private val TAG = ChatListActivity::class.java.name
 
-    private val nativeInterface: NativeInterface = NativeInterfaceImpl(
-        coroutineScope = lifecycleScope,
-        onCloseChat = { finish() }
-    )
+    private lateinit var nativeInterface: NativeInterface
 
-    private lateinit var webView: WebView
-
-    private lateinit var jsInterface: JsInterface
+    private lateinit var webView: BrrmWebView
 
     private lateinit var chatBroadcastReceiver: ChatBroadcastReceiver
 
     private lateinit var permissionManager: PermissionManager
+
+    companion object {
+        fun createIntent(context: Context, bundle: Bundle? = null): Intent =
+            Intent(context, ChatListActivity::class.java).apply {
+                setPackage(context.packageName)
+                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY)
+                bundle?.let { putExtras(it) }
+            }
+    }
 
     private val onBackHandler: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -49,7 +48,6 @@ internal class ChatListActivity : AppCompatActivity() {
                     finish()
                 } else {
                     nativeInterface.openPage(webView, "chat-list")
-                    this.isEnabled = false
                 }
             }
         }
@@ -71,7 +69,20 @@ internal class ChatListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat_list)
 
         onBackPressedDispatcher.addCallback(onBackHandler)
-        webView = WebView(applicationContext).apply {
+
+        permissionManager = PermissionManager(this@ChatListActivity)
+
+        nativeInterface = NativeInterfaceImpl(
+            coroutineScope = lifecycleScope,
+            onCloseChat = { finish() }
+        ).apply {
+            intent?.extras?.getString(Chat.CHAT_MESSAGE_KEY)?.let {
+                val chat = ChatMessage.fromJson(JSONObject(it))
+                setChatId(chat.chatId)
+            }
+        }
+
+        webView = BrrmWebView(this@ChatListActivity, nativeInterface, permissionManager).apply {
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
@@ -82,50 +93,7 @@ internal class ChatListActivity : AppCompatActivity() {
             it.addView(webView)
         }
 
-        permissionManager = PermissionManager(this)
-
         chatBroadcastReceiver = ChatBroadcastReceiver(webView, nativeInterface)
-
-        jsInterface = JsInterface(webView, nativeInterface)
-
-        setupWebView(webView)
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView(webView: WebView) {
-        webView.apply {
-            addJavascriptInterface(jsInterface, JsInterface.interfaceName)
-
-            settings.apply {
-                javaScriptEnabled = true
-                cacheMode = WebSettings.LOAD_NO_CACHE
-                textZoom = 100
-                useWideViewPort = true
-                loadWithOverviewMode = true
-                domStorageEnabled = true
-                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                settings.safeBrowsingEnabled = false
-            }
-
-            webViewClient = ChatWebClient()
-
-            webChromeClient =
-                ChatChromeClient(permissionManager, callback = object : ChatChromeClient.Callback {
-                    override fun onPermissionCanceled(message: String) {
-                        Toast.makeText(this@ChatListActivity, message, Toast.LENGTH_SHORT).show()
-                    }
-                })
-
-            val url = "${getString(R.string.BRRM_CHAT_BASE_DEV_URL)}?platform=android"
-            loadUrl(url)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                permissionManager.requestPermissions(listOf(Manifest.permission.POST_NOTIFICATIONS))
-            }
-        }
     }
 
     override fun onStop() {
@@ -135,7 +103,6 @@ internal class ChatListActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        webView.loadUrl("about:blank")
         webView.destroy()
         super.onDestroy()
     }

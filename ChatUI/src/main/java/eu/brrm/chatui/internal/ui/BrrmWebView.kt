@@ -20,9 +20,9 @@ import eu.brrm.chatui.internal.permission.PermissionManager
 @SuppressLint("SetJavaScriptEnabled", "ViewConstructor")
 internal class BrrmWebView(
     activity: FragmentActivity,
-    nativeInterface: NativeInterface,
-    permissionManager: PermissionManager
-) : WebView(activity), LifecycleEventObserver {
+    private val nativeInterface: NativeInterface,
+    private val permissionManager: PermissionManager
+) : WebView(activity.applicationContext), LifecycleEventObserver {
 
     private val jsInterface: JsInterface
 
@@ -54,7 +54,7 @@ internal class BrrmWebView(
                 }
             })
 
-        val url = "${context.getString(R.string.BRRM_CHAT_BASE_DEV_URL)}?platform=android"
+        val url = "${context.getString(R.string.BRRM_CHAT_BASE_URL)}?platform=android"
         loadUrl(url)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -65,8 +65,7 @@ internal class BrrmWebView(
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
             Lifecycle.Event.ON_DESTROY -> {
-                this.loadUrl("about:blank")
-                this.destroy()
+                destroy()
                 lifecycleOwner.lifecycle.removeObserver(this@BrrmWebView)
             }
 
@@ -76,5 +75,10 @@ internal class BrrmWebView(
 
             else -> {}
         }
+    }
+
+    override fun destroy() {
+        this.loadUrl("about:blank")
+        super.destroy()
     }
 }

@@ -14,27 +14,33 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        resValue("string", "BRRM_CHAT_DEV_HOST", DEV_BRRM_HOST)
-        resValue("string", "BRRM_CHAT_BASE_DEV_URL", "https://${DEV_BRRM_HOST}/")
-        resValue("string", "BRRM_CHAT_PROD_HOST", PROD_BRRM_HOST)
-        resValue("string", "BRRM_CHAT_BASE_PROD_URL", "https://${PROD_BRRM_HOST}/")
     }
 
     buildTypes {
+        debug {
+            resValue("string", "BRRM_CHAT_HOST", DEV_BRRM_HOST)
+            resValue("string", "BRRM_CHAT_BASE_URL", "https://${DEV_BRRM_HOST}/")
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            resValue("string", "BRRM_CHAT_HOST", PROD_BRRM_HOST)
+            resValue("string", "BRRM_CHAT_BASE_URL", "https://${PROD_BRRM_HOST}/")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
+    }
+
+    buildFeatures{
+        viewBinding = true
     }
 }
 
@@ -51,6 +57,9 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
     implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-messaging-directboot")
+
+    implementation("androidx.datastore:datastore-preferences:1.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

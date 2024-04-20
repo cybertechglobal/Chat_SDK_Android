@@ -4,6 +4,8 @@ import android.webkit.ValueCallback
 import android.webkit.WebView
 
 internal interface NativeInterface {
+    fun setChatId(chatId:String?)
+
     fun auth(webView: WebView?)
 
     fun subscribeDevice(webView: WebView?)

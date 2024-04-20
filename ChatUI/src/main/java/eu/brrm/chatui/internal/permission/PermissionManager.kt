@@ -56,6 +56,4 @@ class PermissionManager(private val activity: ComponentActivity) {
     fun permissionCanceled(message: String) {
         permissionCallback?.onPermissionCanceled(message)
     }
-
-
 }

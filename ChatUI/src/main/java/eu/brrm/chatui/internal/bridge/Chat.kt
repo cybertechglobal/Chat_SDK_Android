@@ -10,6 +10,7 @@ import kotlinx.coroutines.withContext
 internal object Chat {
     private val TAG: String = Chat::class.java.name
 
+    const val CHAT_MESSAGE_KEY = "chat-message"
     const val EVENT_MESSAGE_NEW = "chat.message"
     const val EVENT_MESSAGE_SEEN = "message.seen"
 

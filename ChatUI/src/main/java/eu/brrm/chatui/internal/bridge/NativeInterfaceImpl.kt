@@ -19,13 +19,20 @@ class NativeInterfaceImpl(
     NativeInterface {
     private val TAG = NativeInterfaceImpl::class.java.name
 
+    private var chatId: String? = null
+
+    private val storage = LibraryModule.getStorage()
+    override fun setChatId(chatId: String?) {
+        this.chatId = chatId
+    }
+
     override fun auth(webView: WebView?) {
         coroutineScope?.launch {
             val appToken = LibraryModule.getAppToken()
-            val user =
-                LibraryModule.brrmUser ?: throw NullPointerException("User must be initialized!")
-            val group =
-                LibraryModule.brrmGroup ?: throw NullPointerException("Group must be initialized!")
+            val user = storage.getUser()
+                ?: throw NullPointerException("User must be initialized!")
+            val group = storage.getGroup()
+                ?: throw NullPointerException("Group must be initialized!")
 
             val json = JSONObject().apply {
                 put("appAccessToken", appToken)
@@ -35,7 +42,9 @@ class NativeInterfaceImpl(
                 put("groupUniqueId", group.id)
                 put("groupName", group.name)
                 put("deviceUniqueId", LibraryModule.deviceService().getUniqueDeviceId())
+                put("chatId", chatId)
             }.toString()
+            chatId = null
             withContext(Dispatchers.Main) {
                 executeJs(webView = webView, "auth", json)
             }

@@ -2,9 +2,9 @@ package eu.brrm.chatui.internal
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import android.webkit.WebView
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import com.google.firebase.messaging.RemoteMessage
 import eu.brrm.chatui.BrrmChat
 import eu.brrm.chatui.internal.bridge.Chat.APP_NAME
@@ -13,8 +13,10 @@ import eu.brrm.chatui.internal.data.BrrmGroup
 import eu.brrm.chatui.internal.data.BrrmUser
 import eu.brrm.chatui.internal.module.LibraryModule
 import eu.brrm.chatui.internal.service.DeviceService
+import eu.brrm.chatui.internal.storage.Storage
 import eu.brrm.chatui.internal.ui.ChatListActivity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 internal class BrrmChatImpl internal constructor(
     context: Application,
@@ -27,19 +29,18 @@ internal class BrrmChatImpl internal constructor(
 
     private val coroutineScope: CoroutineScope
 
+    private val storage: Storage
+
     init {
         Log.d(TAG, "init()")
         LibraryModule.init(context, appToken)
-        deviceService = LibraryModule.deviceService()
         coroutineScope = LibraryModule.coroutineScope()
-        WebView(context.applicationContext)
+        deviceService = LibraryModule.deviceService()
+        storage = LibraryModule.getStorage()
     }
 
     override fun openChatList(context: Context) {
-        Intent(context, ChatListActivity::class.java).apply {
-            flags =
-                flags or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-        }.let {
+        ChatListActivity.createIntent(context).let {
             context.startActivity(it)
         }
     }
@@ -57,10 +58,26 @@ internal class BrrmChatImpl internal constructor(
     }
 
     override fun setUser(brrmUser: BrrmUser) {
-        LibraryModule.brrmUser = brrmUser
+        coroutineScope.launch {
+            storage.saveUser(brrmUser)
+        }
     }
 
     override fun setGroup(brrmGroup: BrrmGroup) {
-        LibraryModule.brrmGroup = brrmGroup
+        coroutineScope.launch {
+            storage.saveGroup(brrmGroup)
+        }
+    }
+
+    override fun setChatIconDrawable(@DrawableRes icon: Int) {
+        coroutineScope.launch {
+            storage.saveIconDrawable(icon)
+        }
+    }
+
+    override fun setChatIconColor(@ColorRes color: Int) {
+        coroutineScope.launch {
+            storage.saveIconColor(color)
+        }
     }
 }
