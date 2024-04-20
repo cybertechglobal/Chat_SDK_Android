@@ -66,7 +66,7 @@ android {
                 create<MavenPublication>("maven") {
                     groupId = "le"
                     artifactId = "chat-ui"
-                    version = "1.0.3"
+                    version = "1.0.5"
 
                     from(components["release"])
                 }
