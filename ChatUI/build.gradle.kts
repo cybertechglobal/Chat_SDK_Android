@@ -11,7 +11,7 @@ android {
     namespace = "eu.brrm.chatui"
     compileSdk = 34
     val DEV_BRRM_HOST: String = "testwidget.myautohouse.eu"
-    val PROD_BRRM_HOST: String = "widget.myautohouse.eu"
+    val PROD_BRRM_HOST: String = "testwidget.myautohouse.eu"
     defaultConfig {
         minSdk = 21
         version = 3
@@ -64,7 +64,7 @@ android {
         publishing {
             publications {
                 create<MavenPublication>("maven") {
-                    groupId = "eu.brrm.chatui"
+                    groupId = "le"
                     artifactId = "chat-ui"
                     version = "1.0.3"
 
