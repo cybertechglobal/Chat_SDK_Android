@@ -10,7 +10,7 @@ val chatAppToken = project.properties["CHAT_APP_TOKEN"]
 android {
     signingConfigs {
         create("release") {
-            storeFile = file("D:\\Android projects\\ChatTestApp\\app\\signkey.jks")
+            storeFile = file("signkey.jks")
             storePassword = "sekiseki"
             keyAlias = "sekiseki"
             keyPassword = "sekiseki"
