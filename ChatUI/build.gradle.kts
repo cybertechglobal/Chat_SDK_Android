@@ -1,6 +1,9 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    `maven-publish`
 }
 
 
@@ -11,9 +14,13 @@ android {
     val PROD_BRRM_HOST: String = "widget.myautohouse.eu"
     defaultConfig {
         minSdk = 21
-
+        version = 3
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        aarMetadata {
+            minCompileSdk = 21
+        }
     }
 
     buildTypes {
@@ -39,14 +46,38 @@ android {
         jvmTarget = "17"
     }
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
+    }
+
+    testFixtures {
+        enable = true
+    }
+
+    publishing {
+        singleVariant("release") {
+            withJavadocJar()
+        }
+    }
+
+    afterEvaluate {
+        publishing {
+            publications {
+                create<MavenPublication>("maven") {
+                    groupId = "eu.brrm.chatui"
+                    artifactId = "chat-ui"
+                    version = "1.0.3"
+
+                    from(components["release"])
+                }
+            }
+        }
     }
 }
 
 dependencies {
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

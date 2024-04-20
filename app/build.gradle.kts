@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -66,8 +66,8 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx")
     //implementation("com.google.firebase:firebase-analytics-ktx")
 
-    //implementation(project(mapOf("path" to ":ChatUI")))
-    implementation("com.github.cybertechglobal:Chat_SDK_Android:master-SNAPSHOT")
+    implementation(project(":ChatUI"))
+    //implementation("com.github.cybertechglobal:Chat_SDK_Android:master-SNAPSHOT")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
