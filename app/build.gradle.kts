@@ -64,9 +64,10 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
     implementation("com.google.firebase:firebase-messaging-ktx")
-
-    implementation(project(mapOf("path" to ":ChatUI")))
     //implementation("com.google.firebase:firebase-analytics-ktx")
+
+    //implementation(project(mapOf("path" to ":ChatUI")))
+    implementation("com.github.cybertechglobal:Chat_SDK_Android:master-SNAPSHOT")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
