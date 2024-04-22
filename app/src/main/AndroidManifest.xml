@@ -31,14 +31,14 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".MyPushService"
-            android:directBootAware="true"
-            android:exported="false">
-            <intent-filter android:priority="999">
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+<!--        <service-->
+<!--            android:name=".MyPushService"-->
+<!--            android:directBootAware="true"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter android:priority="999">-->
+<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
 
         <meta-data
             android:name="eu.brrm.chatui.default_notification_icon"

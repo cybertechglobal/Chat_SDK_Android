@@ -35,7 +35,12 @@ internal class ChatListActivity : AppCompatActivity() {
         fun createIntent(context: Context, bundle: Bundle? = null): Intent =
             Intent(context, ChatListActivity::class.java).apply {
                 setPackage(context.packageName)
-                addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY)
+                addFlags(
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or
+                            Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_NO_HISTORY or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+                )
                 bundle?.let { putExtras(it) }
             }
     }

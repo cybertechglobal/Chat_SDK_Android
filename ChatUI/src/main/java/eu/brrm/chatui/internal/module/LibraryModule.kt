@@ -14,11 +14,9 @@ import kotlinx.coroutines.Dispatchers
 
 internal object LibraryModule {
     private lateinit var mContext: Application
-    private lateinit var mAppToken: String
 
-    fun init(context: Application, appToken: String) {
+    fun init(context: Application) {
         this.mContext = context
-        this.mAppToken = appToken
     }
 
     private val mCoroutineScope: CoroutineScope by lazy {
@@ -46,9 +44,5 @@ internal object LibraryModule {
 
     fun getStorage(): Storage {
         return mStorage
-    }
-
-    fun getAppToken(): String {
-        return mAppToken
     }
 }

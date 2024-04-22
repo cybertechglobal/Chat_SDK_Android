@@ -5,9 +5,9 @@ import eu.brrm.chatui.internal.data.BrrmUser
 
 object TestData {
     val user1 = BrrmUser(
-        id = "d736ecee-a78d-47f2-8a5e-bb9eabc1ffa3",
-        email = "seki@catch.com",
-        name = "Semsudin Tafilovic"
+        id = "0ff1074e-50d6-4b64-87aa-f14d83c2c088",
+        email = "android1@myauto.com",
+        name = "Android 1"
     )
 
     val user2 = BrrmUser(

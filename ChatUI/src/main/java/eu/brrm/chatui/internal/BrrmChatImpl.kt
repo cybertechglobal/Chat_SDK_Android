@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 internal class BrrmChatImpl internal constructor(
     context: Application,
-    appToken: String
+    appToken: String? = null
 ) : BrrmChat {
 
     private val TAG = BrrmChatImpl::class.java.name
@@ -33,10 +33,15 @@ internal class BrrmChatImpl internal constructor(
 
     init {
         Log.d(TAG, "init()")
-        LibraryModule.init(context, appToken)
+        LibraryModule.init(context)
         coroutineScope = LibraryModule.coroutineScope()
         deviceService = LibraryModule.deviceService()
         storage = LibraryModule.getStorage()
+        appToken?.let {
+            coroutineScope.launch {
+                storage.saveToken(it)
+            }
+        }
     }
 
     override fun openChatList(context: Context) {

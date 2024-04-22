@@ -22,13 +22,15 @@ class NativeInterfaceImpl(
     private var chatId: String? = null
 
     private val storage = LibraryModule.getStorage()
+
+    private val deviceService = LibraryModule.deviceService()
     override fun setChatId(chatId: String?) {
         this.chatId = chatId
     }
 
     override fun auth(webView: WebView?) {
         coroutineScope?.launch {
-            val appToken = LibraryModule.getAppToken()
+            val appToken = storage.getToken()
             val user = storage.getUser()
                 ?: throw NullPointerException("User must be initialized!")
             val group = storage.getGroup()
@@ -41,8 +43,9 @@ class NativeInterfaceImpl(
                 put("name", user.name)
                 put("groupUniqueId", group.id)
                 put("groupName", group.name)
-                put("deviceUniqueId", LibraryModule.deviceService().getUniqueDeviceId())
-                put("chatId", chatId)
+                put("deviceUniqueId", deviceService.getUniqueDeviceId())
+                put("isGroupAdmin", user.isGroupAdmin)
+                chatId?.let { put("chatId", it) }
             }.toString()
             chatId = null
             withContext(Dispatchers.Main) {
