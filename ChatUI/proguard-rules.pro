@@ -21,8 +21,6 @@
 #-renamesourcefileattribute SourceFile
 
 -dontwarn java.lang.invoke.StringConcatFactory
-
-
 -allowaccessmodification
 -optimizations !code/simplification/arithmetic
 -keepattributes *Annotation*

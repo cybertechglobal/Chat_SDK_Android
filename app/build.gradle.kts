@@ -67,6 +67,7 @@ dependencies {
     //implementation("com.google.firebase:firebase-analytics-ktx")
 
     implementation(project(":ChatUI"))
+    //implementation("eu.brrm.chatui:chat-ui:1.0.0-SNAPSHOT")
     //implementation("com.github.cybertechglobal:Chat_SDK_Android:1.0.4")
 
     testImplementation("junit:junit:4.13.2")

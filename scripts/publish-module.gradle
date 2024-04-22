@@ -1,0 +1,95 @@
+def publishGroupId = project.properties["PUBLISH_GROUP_ID"].toString()
+def publishVersion = project.properties["PUBLISH_VERSION"].toString()
+
+def name = project.properties["PUBLISH_NAME"].toString()
+def artifact_Id = project.properties["PUBLISH_ARTIFACT_ID"].toString()
+def publishDescription = project.properties["PUBLISH_DESCRIPTION"].toString()
+def publishUrl = project.properties["PUBLISH_URL"].toString()
+def pomScmConnection = project.properties["POM_SCM_CONNECTION"].toString()
+def pomUrl = project.properties["POM_URL"].toString()
+
+def developerId = project.properties["DEVELOPER_ID"].toString()
+def developerName = project.properties["DEVELOPER_NAME"].toString()
+def developerEmail = project.properties["DEVELOPER_EMAIL"].toString()
+
+tasks.register('androidSourcesJar', Jar) {
+    archiveClassifier.set('sources')
+    if (project.plugins.findPlugin("com.android.library")) {
+        // For Android libraries
+        from android.sourceSets.main.java.srcDirs
+        from android.sourceSets.main.kotlin.srcDirs
+    } else {
+        // For pure Kotlin libraries, in case you have them
+        from sourceSets.main.java.srcDirs
+        from sourceSets.main.kotlin.srcDirs
+    }
+}
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // The coordinates of the library, being set from variables that
+                // we'll set up later
+                groupId publishGroupId
+                artifactId artifact_Id
+                version publishVersion
+
+                // Two artifacts, the `aar` (or `jar`) and the sources
+                if (project.plugins.findPlugin("com.android.library")) {
+                    from components.release
+                } else {
+                    from components.java
+                }
+
+                // Mostly self-explanatory metadata
+                pom {
+                    name = publishGroupId
+                    description = publishDescription
+                    url = publishUrl
+
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'http://www.opensource.org/licenses/mit-license.php'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = developerId
+                            name = developerName
+                            email = developerEmail
+                        }
+                        // Add all other devs here...
+                    }
+
+                    // Version control info - if you're using GitHub, follow the
+                    // format as seen here
+                    scm {
+                        connection = pomScmConnection
+                        developerConnection = pomScmConnection
+                        url = pomUrl
+                    }
+                }
+            }
+        }
+    }
+
+
+    nexusPublishing {
+        repositories {
+            "CHAT-UI" {
+                nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+                snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+                username.set("WLzALROO") // defaults to project.properties["myNexusUsername"]
+                password.set("fAiZRLLYwMkCy+rMiXy9Tp/u1yz1dUpCFMjoPwMllyXB") // def
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.release
+    }
+}
