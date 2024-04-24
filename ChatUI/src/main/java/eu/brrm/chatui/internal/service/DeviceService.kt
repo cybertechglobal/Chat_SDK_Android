@@ -9,4 +9,6 @@ internal interface DeviceService {
     fun getUniqueDeviceId(): String
 
     fun handleChatMessage(remoteMessage: RemoteMessage)
+
+    fun handleChatMessage(map: Map<*, *>)
 }

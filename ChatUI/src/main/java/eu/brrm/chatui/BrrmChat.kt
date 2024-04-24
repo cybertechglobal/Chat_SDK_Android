@@ -2,7 +2,6 @@ package eu.brrm.chatui
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.google.firebase.messaging.RemoteMessage
@@ -16,9 +15,13 @@ interface BrrmChat {
 
     fun isBrrmChatMessage(message: RemoteMessage): Boolean
 
+    fun isBrrmChatMessage(message: Map<*, *>): Boolean
+
     fun onNewToken(token: String)
 
     fun handleBrrmChatMessage(message: RemoteMessage)
+
+    fun handleBrrmChatMessage(message: Map<*, *>)
 
     fun setUser(brrmUser: BrrmUser)
 

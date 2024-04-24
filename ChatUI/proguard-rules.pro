@@ -24,7 +24,7 @@
 -allowaccessmodification
 -optimizations !code/simplification/arithmetic
 -keepattributes *Annotation*
--flattenpackagehierarchy
+#-flattenpackagehierarchy
 -keeppackagenames eu.brrm.chatui
 -repackageclasses eu.brrm.chatui.internal
 -keepclasseswithmembers class eu.brrm.chatui.BrrmChat

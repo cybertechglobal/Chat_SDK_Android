@@ -29,6 +29,7 @@ internal data class ChatMessage(
             return fromMap(map)
         }
 
+        @JvmStatic
         fun fromJson(json: JSONObject): ChatMessage {
             val chatId = json.optString("chatId") ?: ""
             val appName = json.optString("appName") ?: ""
@@ -45,7 +46,8 @@ internal data class ChatMessage(
             )
         }
 
-        private fun fromMap(map: Map<String, String>): ChatMessage {
+        @JvmStatic
+        fun fromMap(map: Map<String, String>): ChatMessage {
             val chatId = map["chatId"] ?: ""
             val appName = map["appName"] ?: ""
             val eventName = map["eventName"] ?: ""
@@ -77,6 +79,7 @@ internal data class InternalMessage(
     }
 
     companion object {
+        @JvmStatic
         fun fromJson(json: JSONObject): InternalMessage {
             val id = json.optString("id")
             val chatId = json.optString("chatId")

@@ -8,13 +8,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import eu.brrm.chatui.R
 import eu.brrm.chatui.internal.storage.Storage
 import eu.brrm.chatui.internal.ui.ChatListActivity
 import kotlin.random.Random
@@ -31,27 +31,32 @@ internal class NotificationFactory(
 
     private val notificationManager = NotificationManagerCompat.from(context)
 
-    private val defaultNotificationColor = getDefaultNotificationColor()
-    private val defaultNotificationIcon = getDefaultNotificationIcon()
-
     private val random = Random(10000)
-    suspend fun createNotification(title: String, message: String, bundle: Bundle): Notification {
+    suspend fun createNotification(title: String?, message: String?, bundle: Bundle): Notification {
         createNotificationChannel()
 
+        val finalTitle = title ?: "New message"
+        val finalMessage = message ?: "Click to open chat message"
+
         val notificationStyle =
-            NotificationCompat.BigTextStyle().setSummaryText(message).setBigContentTitle(title)
+            NotificationCompat.BigTextStyle().setSummaryText(message).setBigContentTitle(finalTitle)
+
+        val defaultNotificationColor = getDefaultNotificationColor()
+
+        val defaultNotificationIcon = getDefaultNotificationIcon()
 
         val icon = storage.getIconDrawable() ?: defaultNotificationIcon
+
         val color = storage.getIconColor()?.let { ContextCompat.getColor(context, it) }
             ?: defaultNotificationColor
 
         val builder = NotificationCompat.Builder(context, notificationChannelId)
             .setStyle(notificationStyle)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setSmallIcon(icon)
-            .setColor(color)
+            .setContentTitle(finalTitle)
+            .setContentText(finalMessage)
+            .setSmallIcon(icon ?: R.drawable.ic_chat_bubble_icon)
+            .setColor(color ?: android.R.color.white)
             .setAutoCancel(true)
             .setOngoing(false)
 
@@ -68,13 +73,14 @@ internal class NotificationFactory(
         notificationManager.notify(id, notification)
     }
 
-    private fun getDefaultNotificationIcon(): Int {
-        return getMetadata().getInt(DEFAULT_NOTIFICATION_ICON)
+    private fun getDefaultNotificationIcon(): Int? {
+        val icon = getMetadata().getInt(DEFAULT_NOTIFICATION_ICON)
+        return if (icon != 0) icon else null
     }
 
-    private fun getDefaultNotificationColor(): Int {
+    private fun getDefaultNotificationColor(): Int? {
         val colorId = getMetadata().getInt(DEFAULT_NOTIFICATION_COLOR)
-        return ContextCompat.getColor(context, colorId)
+        return if (colorId != 0) ContextCompat.getColor(context, colorId) else null
     }
 
     private fun getMetadata(): Bundle {
@@ -98,7 +104,8 @@ internal class NotificationFactory(
 
     private fun createContentIntent(bundle: Bundle): PendingIntent {
         val intent = ChatListActivity.createIntent(context, bundle)
-        val flags = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT else PendingIntent.FLAG_CANCEL_CURRENT
+        val flags =
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT else PendingIntent.FLAG_CANCEL_CURRENT
         return PendingIntent.getActivity(context, 1, intent, flags)
     }
 }

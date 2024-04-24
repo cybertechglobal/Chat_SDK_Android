@@ -2,6 +2,7 @@ package eu.brrm.chatui.internal
 
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -54,12 +55,32 @@ internal class BrrmChatImpl internal constructor(
         return message.data.containsKey(KEY_APP_NAME) && message.data[KEY_APP_NAME].equals(APP_NAME)
     }
 
+    override fun isBrrmChatMessage(message: Map<*, *>): Boolean {
+        val bundle = Bundle().apply {
+            message.entries.forEach { item ->
+                putString(item.key.toString(), item.value.toString())
+            }
+        }
+        val remoteMessage = RemoteMessage(bundle)
+        return isBrrmChatMessage(remoteMessage)
+    }
+
     override fun onNewToken(token: String) {
         deviceService.subscribeDevice(token)
     }
 
     override fun handleBrrmChatMessage(message: RemoteMessage) {
         deviceService.handleChatMessage(message)
+    }
+
+    override fun handleBrrmChatMessage(message: Map<*, *>) {
+        val bundle = Bundle().apply {
+            message.entries.forEach {
+                this.putString(it.key.toString(), it.value.toString())
+            }
+        }
+        val remoteMessage = RemoteMessage(bundle)
+        handleBrrmChatMessage(remoteMessage)
     }
 
     override fun setUser(brrmUser: BrrmUser) {

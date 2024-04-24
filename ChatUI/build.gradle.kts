@@ -29,7 +29,7 @@ android {
             resValue("string", "BRRM_CHAT_BASE_URL", "https://${DEV_BRRM_HOST}/")
         }
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -64,9 +64,9 @@ android {
         publishing {
             publications {
                 create<MavenPublication>("maven") {
-                    groupId = "le"
+                    groupId = "eu.brrm"
                     artifactId = "chat-ui"
-                    version = "1.0.5"
+                    version = "1.0.0-SNAPSHOT"
 
                     from(components["release"])
                 }
@@ -79,7 +79,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.webkit:webkit:1.10.0")

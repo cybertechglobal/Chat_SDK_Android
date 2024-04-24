@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import eu.brrm.chatui.internal.bridge.Chat
+import eu.brrm.chatui.internal.data.ChatMessage
 import eu.brrm.chatui.internal.data.ChatMessage.Companion.toChatMessage
 import eu.brrm.chatui.internal.ui.notification.NotificationFactory
 import kotlinx.coroutines.CoroutineScope
@@ -38,20 +39,61 @@ internal class DeviceServiceImpl(
     }
 
     override fun handleChatMessage(remoteMessage: RemoteMessage) {
+        printMessage(remoteMessage)
         coroutineScope.launch {
-            printMessage(remoteMessage)
             Chat.notifyChatUpdated(context, remoteMessage)
             val chatMessage = remoteMessage.toChatMessage()
-            val title = context.getString(context.applicationInfo.labelRes)
-            val message = chatMessage.message?.message ?: ""
-            val bundle = Bundle().apply {
-                putString(Chat.CHAT_MESSAGE_KEY, chatMessage.toJson().toString())
-            }
-            val notification = notificationFactory.createNotification(title, message, bundle)
-            withContext(Dispatchers.Main) {
-                notificationFactory.show(notification)
-            }
+            createNotification(chatMessage)
         }
+    }
+
+    override fun handleChatMessage(map: Map<*, *>) {
+        printMessage(map = map)
+        coroutineScope.launch {
+            val data = mutableMapOf<String, String>().apply {
+                map.forEach {
+                    this[it.key.toString()] = it.value.toString()
+                }
+            }
+            val chatMessage = ChatMessage.fromMap(data)
+            createNotification(chatMessage)
+        }
+    }
+
+    private suspend fun createNotification(chatMessage: ChatMessage) {
+        val title = context.getString(context.applicationInfo.labelRes)
+        val message = chatMessage.message?.message ?: ""
+        val bundle = Bundle().apply {
+            putString(Chat.CHAT_MESSAGE_KEY, chatMessage.toJson().toString())
+        }
+        val notification = notificationFactory.createNotification(title, message, bundle)
+        withContext(Dispatchers.Main) {
+            notificationFactory.show(notification)
+        }
+    }
+
+    private fun printMessage(map: Map<*, *>) {
+        val messageId = map["MessageId"]?.toString() ?: ""
+        val sb = StringBuilder()
+
+        sb.append("\n").append("==========================================")
+        sb.append("\n").append("                 PUSH MESSAGE             ")
+        sb.append("\n").append("==========================================")
+        sb.append("\n").append("MessageId:").append(messageId).append("\n")
+            .append("\"data\":{").append("\n")
+
+        map.onEachIndexed { index, (key, value) ->
+            sb.append("\"").append(key).append("\"").append(":").append("\"").append(value)
+                .append("\"")
+            if (index < map.size - 1) {
+                sb.append(",")
+            }
+            sb.append("\n")
+        }
+        sb.append("}")
+        sb.append("\n").append("==========================================")
+
+        Log.d(TAG, sb.toString())
     }
 
     private fun printMessage(message: RemoteMessage) {
