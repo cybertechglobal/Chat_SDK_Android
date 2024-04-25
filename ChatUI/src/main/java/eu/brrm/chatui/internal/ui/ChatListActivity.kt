@@ -38,8 +38,7 @@ internal class ChatListActivity : AppCompatActivity() {
                 addFlags(
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or
                             Intent.FLAG_ACTIVITY_NEW_TASK or
-                            Intent.FLAG_ACTIVITY_NO_HISTORY or
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            Intent.FLAG_ACTIVITY_NO_HISTORY
                 )
                 bundle?.let { putExtras(it) }
             }
