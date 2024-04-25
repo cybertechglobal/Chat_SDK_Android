@@ -47,7 +47,7 @@ internal class NotificationFactory(
 
         val icon = storage.getIconDrawable() ?: defaultNotificationIcon
 
-        val color = storage.getIconColor()?.let { ContextCompat.getColor(context, it) }
+        val color = storage.getIconColor()?.let { resolveColor(it) }
             ?: defaultNotificationColor
 
         val builder = NotificationCompat.Builder(context, notificationChannelId)
@@ -81,6 +81,15 @@ internal class NotificationFactory(
     private fun getDefaultNotificationColor(): Int? {
         val colorId = getMetadata().getInt(DEFAULT_NOTIFICATION_COLOR)
         return if (colorId != 0) ContextCompat.getColor(context, colorId) else null
+    }
+
+    private fun resolveColor(colorRes: Int?): Int? {
+        if (colorRes == null) return null
+        return try {
+            ContextCompat.getColor(context, colorRes)
+        } catch (e: Exception) {
+            colorRes
+        }
     }
 
     private fun getMetadata(): Bundle {
