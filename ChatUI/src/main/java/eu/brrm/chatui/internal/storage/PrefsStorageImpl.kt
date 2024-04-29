@@ -23,26 +23,21 @@ class PrefsStorageImpl(context: Context) : Storage {
     private val iconDrawableKey = intPreferencesKey("iconDrawableKey")
     private val iconColorKey = intPreferencesKey("iconColorKey")
 
-    override suspend fun saveGroup(group: BrrmGroup) {
-        dataStore.edit {
-            it[groupKey] = group.toJSON().toString()
-        }
-    }
-
     override suspend fun getGroup(): BrrmGroup? {
         val data = dataStore.data.first()[groupKey]
         return data?.let { BrrmGroup.fromJSON(JSONObject(it)) }
     }
 
-    override suspend fun saveUser(user: BrrmUser) {
-        dataStore.edit {
-            it[userKey] = user.toJSON().toString()
-        }
-    }
-
     override suspend fun getUser(): BrrmUser? {
         val data = dataStore.data.first()[userKey]
         return data?.let { BrrmUser.fromJSON(JSONObject(it)) }
+    }
+
+    override suspend fun saveUserAndGroup(user: BrrmUser, group: BrrmGroup) {
+        dataStore.edit {
+            it[userKey] = user.toJSON().toString()
+            it[groupKey] = group.toJSON().toString()
+        }
     }
 
     override suspend fun saveIconDrawable(icon: Int) {

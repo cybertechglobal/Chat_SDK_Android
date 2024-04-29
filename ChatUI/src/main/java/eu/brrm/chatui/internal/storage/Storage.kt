@@ -6,13 +6,11 @@ import eu.brrm.chatui.internal.data.BrrmGroup
 import eu.brrm.chatui.internal.data.BrrmUser
 
 interface Storage {
-    suspend fun saveGroup(group: BrrmGroup)
-
     suspend fun getGroup(): BrrmGroup?
 
-    suspend fun saveUser(user: BrrmUser)
-
     suspend fun getUser(): BrrmUser?
+
+    suspend fun saveUserAndGroup(user: BrrmUser,group: BrrmGroup)
 
     suspend fun saveIconDrawable(@DrawableRes icon: Int)
 

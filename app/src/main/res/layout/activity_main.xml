@@ -9,10 +9,17 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/btnRegisterAndSubscribe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/register_subscribe" />
+
+    <Button
         android:id="@+id/btnOpenChatList1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open Chat - Semsudin" />
+        android:text="@string/open_chat_user_1" />
 
     <Button
         android:id="@+id/btnOpenChatList2"

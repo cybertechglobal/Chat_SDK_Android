@@ -10,6 +10,14 @@ import eu.brrm.chatui.internal.data.BrrmGroup
 import eu.brrm.chatui.internal.data.BrrmUser
 
 interface BrrmChat {
+    fun register(
+        brrmUser: BrrmUser,
+        brrmGroup: BrrmGroup,
+        fcmToken: String? = null,
+        onRegister: ((Boolean) -> Unit)? = null
+    )
+
+    fun subscribeDevice(token: String, onSubscribe: ((Boolean) -> Unit)? = null)
 
     fun openChatList(context: Context)
 
@@ -17,15 +25,9 @@ interface BrrmChat {
 
     fun isBrrmChatMessage(message: Map<*, *>): Boolean
 
-    fun onNewToken(token: String)
-
     fun handleBrrmChatMessage(message: RemoteMessage)
 
     fun handleBrrmChatMessage(message: Map<*, *>)
-
-    fun setUser(brrmUser: BrrmUser)
-
-    fun setGroup(brrmGroup: BrrmGroup)
 
     fun setChatIconDrawable(@DrawableRes icon: Int)
 

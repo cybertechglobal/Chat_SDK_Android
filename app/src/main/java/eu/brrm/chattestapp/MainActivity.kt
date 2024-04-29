@@ -6,18 +6,22 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import eu.brrm.chattestapp.TestData.group
-import eu.brrm.chattestapp.TestData.group2
 import eu.brrm.chattestapp.TestData.user1
 import eu.brrm.chattestapp.TestData.user2
 import eu.brrm.chattestapp.TestData.user3
 import eu.brrm.chattestapp.TestData.user4
 import eu.brrm.chattestapp.databinding.ActivityMainBinding
 import eu.brrm.chatui.BrrmChat
-import eu.brrm.chatui.internal.data.BrrmGroup
-import eu.brrm.chatui.internal.data.BrrmUser
 import eu.brrm.chatui.internal.permission.PermissionCallback
 import eu.brrm.chatui.internal.permission.PermissionManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,52 +52,57 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
         }
-        binding.btnOpenChatList1.let { button ->
-            button.setOnClickListener {
-                openChat1()
-            }
+
+        binding.btnRegisterAndSubscribe.setOnClickListener {
+            registerAndSubscribe()
         }
 
-        binding.btnOpenChatList2.let { button ->
-            button.setOnClickListener {
-                openChat2()
-            }
+        binding.btnOpenChatList1.setOnClickListener {
+            openChat1()
         }
 
-        binding.btnOpenChatList3.let { button ->
-            button.setOnClickListener {
-                openChat3()
-            }
+        binding.btnOpenChatList2.setOnClickListener {
+            openChat2()
         }
 
-        binding.btnOpenChatList4.let { button ->
-            button.setOnClickListener {
-                openChat4()
-            }
+        binding.btnOpenChatList3.setOnClickListener {
+            openChat3()
+        }
+
+        binding.btnOpenChatList4.setOnClickListener {
+            openChat4()
+        }
+    }
+
+    private fun registerAndSubscribe() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val token = Firebase.messaging.token.await()
+            BrrmChat.instance.register(user1, group, token)
         }
     }
 
     private fun openChat1() {
-        BrrmChat.instance.setUser(user1)
-        BrrmChat.instance.setGroup(group)
-        BrrmChat.instance.openChatList(this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val token = Firebase.messaging.token.await()
+            BrrmChat.instance.register(user1, group, token)
+            withContext(Dispatchers.Main) {
+                BrrmChat.instance.openChatList(this@MainActivity)
+            }
+        }
     }
 
     private fun openChat2() {
-        BrrmChat.instance.setUser(user2)
-        BrrmChat.instance.setGroup(group)
+        BrrmChat.instance.register(user2, group)
         BrrmChat.instance.openChatList(this)
     }
 
     private fun openChat3() {
-        BrrmChat.instance.setUser(user3)
-        BrrmChat.instance.setGroup(group)
+        BrrmChat.instance.register(user3, group)
         BrrmChat.instance.openChatList(this)
     }
 
     private fun openChat4() {
-        BrrmChat.instance.setUser(user4)
-        BrrmChat.instance.setGroup(group2)
+        BrrmChat.instance.register(user4, group)
         BrrmChat.instance.openChatList(this)
     }
 

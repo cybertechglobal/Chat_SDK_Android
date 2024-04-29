@@ -12,6 +12,9 @@ android {
     compileSdk = 34
     val DEV_BRRM_HOST: String = "testwidget.myautohouse.eu"
     val PROD_BRRM_HOST: String = "testwidget.myautohouse.eu"
+
+    val DEV_CHAT_URL: String = "https://testchat.brrm.eu/"
+    val PROD_CHAT_URL: String = "https://testchat.brrm.eu/"
     defaultConfig {
         minSdk = 21
         version = 3
@@ -27,6 +30,7 @@ android {
         debug {
             resValue("string", "BRRM_CHAT_HOST", DEV_BRRM_HOST)
             resValue("string", "BRRM_CHAT_BASE_URL", "https://${DEV_BRRM_HOST}/")
+            resValue("string", "CHAT_URL", DEV_CHAT_URL)
         }
         release {
             isMinifyEnabled = false
@@ -36,6 +40,7 @@ android {
             )
             resValue("string", "BRRM_CHAT_HOST", PROD_BRRM_HOST)
             resValue("string", "BRRM_CHAT_BASE_URL", "https://${PROD_BRRM_HOST}/")
+            resValue("string", "CHAT_URL", PROD_CHAT_URL)
         }
     }
     compileOptions {

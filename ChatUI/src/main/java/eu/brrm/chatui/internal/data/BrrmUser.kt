@@ -6,7 +6,8 @@ data class BrrmUser(
     val id: String,
     val email: String,
     val name: String,
-    val isGroupAdmin: Boolean = false
+    val isGroupAdmin: Boolean = false,
+    val userToken: String? = null
 ) {
     fun toJSON(): JSONObject {
         return JSONObject().apply {
@@ -14,6 +15,7 @@ data class BrrmUser(
             put("email", email)
             put("name", name)
             put("isGroupAdmin", isGroupAdmin)
+            put("userToken", userToken)
         }
     }
 
@@ -23,7 +25,8 @@ data class BrrmUser(
             val email = json.optString("email")
             val name = json.optString("name")
             val isGroupAdmin = json.optBoolean("isGroupAdmin")
-            return BrrmUser(id, email, name, isGroupAdmin)
+            val userToken = json.optString("userToken")
+            return BrrmUser(id, email, name, isGroupAdmin, userToken)
         }
     }
 }

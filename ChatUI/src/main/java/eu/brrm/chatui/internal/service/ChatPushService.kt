@@ -8,7 +8,7 @@ import eu.brrm.chatui.BrrmChat
 internal class ChatPushService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        BrrmChat.instance.onNewToken(token)
+        BrrmChat.instance.subscribeDevice(token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

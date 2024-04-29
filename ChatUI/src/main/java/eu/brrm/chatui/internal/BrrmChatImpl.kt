@@ -3,16 +3,17 @@ package eu.brrm.chatui.internal
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.google.firebase.messaging.RemoteMessage
 import eu.brrm.chatui.BrrmChat
+import eu.brrm.chatui.ChatLog.logDebug
 import eu.brrm.chatui.internal.bridge.Chat.APP_NAME
 import eu.brrm.chatui.internal.bridge.Chat.KEY_APP_NAME
 import eu.brrm.chatui.internal.data.BrrmGroup
 import eu.brrm.chatui.internal.data.BrrmUser
 import eu.brrm.chatui.internal.module.LibraryModule
+import eu.brrm.chatui.internal.network.ChatApi
 import eu.brrm.chatui.internal.service.DeviceService
 import eu.brrm.chatui.internal.storage.Storage
 import eu.brrm.chatui.internal.ui.ChatListActivity
@@ -32,16 +33,50 @@ internal class BrrmChatImpl internal constructor(
 
     private val storage: Storage
 
+    private val chatApi: ChatApi
+
     init {
-        Log.d(TAG, "init()")
+        logDebug("init()")
         LibraryModule.init(context)
         coroutineScope = LibraryModule.coroutineScope()
         deviceService = LibraryModule.deviceService()
         storage = LibraryModule.getStorage()
+        chatApi = LibraryModule.chatApi()
         appToken?.let {
             coroutineScope.launch {
                 storage.saveToken(it)
             }
+        }
+    }
+
+    override fun register(
+        brrmUser: BrrmUser,
+        brrmGroup: BrrmGroup,
+        fcmToken: String?,
+        onRegister: ((Boolean) -> Unit)?
+    ) {
+        coroutineScope.launch {
+            val response = chatApi.register(brrmUser, brrmGroup)
+            val userToken = response.data?.token
+            if (response.isSuccess() && userToken != null) {
+                storage.saveUserAndGroup(brrmUser.copy(userToken = userToken), brrmGroup)
+            }
+
+            fcmToken?.let {
+                subscribeDevice(it)
+            }
+
+            onRegister?.invoke(response.isSuccess())
+        }
+    }
+
+    override fun subscribeDevice(token: String, onSubscribe: ((Boolean) -> Unit)?) {
+        coroutineScope.launch {
+            val response = chatApi.subscribe(token)
+            if (response.isSuccess()) {
+                deviceService.subscribeDevice(token)
+            }
+            onSubscribe?.invoke(response.isSuccess())
         }
     }
 
@@ -65,10 +100,6 @@ internal class BrrmChatImpl internal constructor(
         return isBrrmChatMessage(remoteMessage)
     }
 
-    override fun onNewToken(token: String) {
-        deviceService.subscribeDevice(token)
-    }
-
     override fun handleBrrmChatMessage(message: RemoteMessage) {
         deviceService.handleChatMessage(message)
     }
@@ -83,17 +114,6 @@ internal class BrrmChatImpl internal constructor(
         handleBrrmChatMessage(remoteMessage)
     }
 
-    override fun setUser(brrmUser: BrrmUser) {
-        coroutineScope.launch {
-            storage.saveUser(brrmUser)
-        }
-    }
-
-    override fun setGroup(brrmGroup: BrrmGroup) {
-        coroutineScope.launch {
-            storage.saveGroup(brrmGroup)
-        }
-    }
 
     override fun setChatIconDrawable(@DrawableRes icon: Int) {
         coroutineScope.launch {

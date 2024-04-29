@@ -2,7 +2,12 @@ package eu.brrm.chatui.internal.module
 
 import android.app.Application
 import android.util.Log
+import eu.brrm.chatui.R
 import eu.brrm.chatui.internal.BrrmChatImpl
+import eu.brrm.chatui.internal.network.ChatApi
+import eu.brrm.chatui.internal.network.ChatApiImpl
+import eu.brrm.chatui.internal.network.NetworkClient
+import eu.brrm.chatui.internal.network.NetworkClientImpl
 import eu.brrm.chatui.internal.service.DeviceService
 import eu.brrm.chatui.internal.service.DeviceServiceImpl
 import eu.brrm.chatui.internal.storage.PrefsStorageImpl
@@ -15,8 +20,13 @@ import kotlinx.coroutines.Dispatchers
 internal object LibraryModule {
     private lateinit var mContext: Application
 
+    private lateinit var baseUrl: String
+
+    private lateinit var chatUrl: String
     fun init(context: Application) {
         this.mContext = context
+        this.baseUrl = context.getString(R.string.BRRM_CHAT_BASE_URL)
+        this.chatUrl = context.getString(R.string.CHAT_URL)
     }
 
     private val mCoroutineScope: CoroutineScope by lazy {
@@ -44,5 +54,13 @@ internal object LibraryModule {
 
     fun getStorage(): Storage {
         return mStorage
+    }
+
+    fun networkClient(): NetworkClient {
+        return NetworkClientImpl(chatUrl, getStorage())
+    }
+
+    fun chatApi(): ChatApi {
+        return ChatApiImpl(networkClient(), getStorage(), deviceService())
     }
 }
