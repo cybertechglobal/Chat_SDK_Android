@@ -33,9 +33,9 @@ dependencies {
 
 ```
 <meta-data
-          android:name="eu.brrm.chatui.default_notification_icon"
-          android:resource="@drawable/ic_chat_icon" />
-        <meta-data
-            android:name="eu.brrm.chatui.default_notification_color"
-            android:resource="@color/ic_chat_icon_color" />
+	android:name="eu.brrm.chatui.default_notification_icon"
+	android:resource="@drawable/ic_chat_icon" />
+<meta-data
+	android:name="eu.brrm.chatui.default_notification_color"
+	android:resource="@color/ic_chat_icon_color" />
 ```
