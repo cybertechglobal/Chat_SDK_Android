@@ -13,6 +13,9 @@ internal class RegisterResponse(val token: String?, val user: BrrmUser?) {
             }
             return RegisterResponse(token, user)
         }
+    }
 
+    override fun toString(): String {
+        return "RegisterResponse(token=$token, user=$user)"
     }
 }

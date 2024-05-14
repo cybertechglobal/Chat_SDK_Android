@@ -15,6 +15,7 @@ internal class NetworkClientImpl(private val chatUrl: String, private val storag
     NetworkClient {
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun <T> execute(request: Request, adapter: Adapter<T>): Response<T> {
+        logInfo("Request: $request")
         val urlPath = buildUrl(request)
         val fullPath = "$chatUrl$urlPath"
         val url = URL(fullPath)
@@ -57,6 +58,7 @@ internal class NetworkClientImpl(private val chatUrl: String, private val storag
             response = resolveResponse(adapter, statusCode, result, error)
         } catch (e: Exception) {
             response = adapter.createResponse(statusCode = 0, null, e)
+            logError(e.message)
         } finally {
             connection.disconnect()
         }

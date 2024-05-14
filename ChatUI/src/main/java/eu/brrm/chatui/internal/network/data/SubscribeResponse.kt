@@ -18,4 +18,8 @@ class SubscribeResponse(
             return SubscribeResponse(id, userId, uniqueId, fcmToken)
         }
     }
+
+    override fun toString(): String {
+        return "SubscribeResponse(id=$id, userId=$userId, uniqueId=$uniqueId, fcmToken=$fcmToken)"
+    }
 }

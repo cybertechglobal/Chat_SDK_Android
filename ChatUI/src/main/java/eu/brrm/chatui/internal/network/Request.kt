@@ -22,4 +22,10 @@ internal abstract class Request(
         queryParams: Map<String, *> = emptyMap<String, String>(),
         headers: Map<String, *> = emptyMap<String, String>()
     ) : Request(path, Method.GET, null, queryParams, headers)
+
+    override fun toString(): String {
+        return "Request(path='$path', method=$method, requestBody=$requestBody, queryParams=$queryParams, headers=$headers, doInput=$doInput, doOutput=$doOutput)"
+    }
+
+
 }

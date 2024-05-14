@@ -5,7 +5,8 @@ plugins {
     id("com.google.firebase.crashlytics")
 }
 
-val chatAppToken = project.properties["CHAT_APP_TOKEN"]
+val chatAppTokenDev = project.properties["CHAT_APP_TOKEN_DEV"]
+val chatAppTokenProd=project.properties["CHAT_APP_TOKEN_PROD"]
 
 android {
     signingConfigs {
@@ -27,10 +28,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField(type = "String", name = "CHAT_APP_TOKEN", "\"${chatAppToken}\"")
     }
 
     buildTypes {
+        debug{
+            buildConfigField(type = "String", name = "CHAT_APP_TOKEN", "\"${chatAppTokenDev}\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -38,6 +41,7 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
+            buildConfigField(type = "String", name = "CHAT_APP_TOKEN", "\"${chatAppTokenProd}\"")
         }
     }
     compileOptions {
@@ -57,12 +61,12 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
-    implementation("androidx.core:core-ktx:1.13.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.webkit:webkit:1.10.0")
+    implementation("androidx.webkit:webkit:1.11.0")
 
-    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-messaging-ktx")
     //implementation("com.google.firebase:firebase-analytics-ktx")
 

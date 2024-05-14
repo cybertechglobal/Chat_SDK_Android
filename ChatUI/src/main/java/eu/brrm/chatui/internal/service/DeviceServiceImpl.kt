@@ -34,7 +34,7 @@ internal class DeviceServiceImpl(
     override fun getUniqueDeviceId(): String {
         val deviceId =
             Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-        Log.w(TAG, "UNIQUE DEVICE ID: $deviceId")
+        //Log.w(TAG, "UNIQUE DEVICE ID: $deviceId")
         return deviceId
     }
 

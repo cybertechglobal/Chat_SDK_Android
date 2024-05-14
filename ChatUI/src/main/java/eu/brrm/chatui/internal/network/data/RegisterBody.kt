@@ -11,4 +11,8 @@ internal class RegisterBody(private val appAccessToken: String, private val user
             put("user", user.toJson())
         }
     }
+
+    override fun toString(): String {
+        return "RegisterBody(appAccessToken='$appAccessToken', user=$user)"
+    }
 }

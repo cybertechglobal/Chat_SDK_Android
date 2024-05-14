@@ -23,4 +23,8 @@ internal class RegisterUser(
             put("deviceUniqueId", deviceUniqueId)
         }
     }
+
+    override fun toString(): String {
+        return "RegisterUser(email='$email', name='$name', uniqueId='$uniqueId', groupName='$groupName', groupUniqueId='$groupUniqueId', isGroupAdmin=$isGroupAdmin, deviceUniqueId='$deviceUniqueId')"
+    }
 }

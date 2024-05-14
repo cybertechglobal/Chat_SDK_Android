@@ -12,4 +12,7 @@ internal class SubscribeDevice(private val uniqueId: String, private val fcmToke
         }
     }
 
+    override fun toString(): String {
+        return "SubscribeDevice(uniqueId='$uniqueId', fcmToken='$fcmToken')"
+    }
 }

@@ -37,12 +37,18 @@ internal object LibraryModule {
 
     private val mStorage: Storage by lazy { PrefsStorageImpl(mContext) }
 
-    private val mNotificationFactory: NotificationFactory
-        get() = NotificationFactory(mContext, mStorage)
+    private val mNotificationFactory: NotificationFactory by lazy {
+        NotificationFactory(
+            mContext,
+            mStorage
+        )
+    }
 
     private val mDeviceService: DeviceService by lazy {
         DeviceServiceImpl(mContext, mCoroutineScope, mNotificationFactory)
     }
+
+    private val networkClient: NetworkClient by lazy { NetworkClientImpl(chatUrl, getStorage()) }
 
     fun deviceService(): DeviceService {
         return mDeviceService
@@ -56,11 +62,7 @@ internal object LibraryModule {
         return mStorage
     }
 
-    fun networkClient(): NetworkClient {
-        return NetworkClientImpl(chatUrl, getStorage())
-    }
-
     fun chatApi(): ChatApi {
-        return ChatApiImpl(networkClient(), getStorage(), deviceService())
+        return ChatApiImpl(networkClient, getStorage(), deviceService())
     }
 }

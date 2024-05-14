@@ -1,5 +1,6 @@
 package eu.brrm.chatui.internal.network
 
+import eu.brrm.chatui.ChatLog.logInfo
 import eu.brrm.chatui.internal.data.BrrmGroup
 import eu.brrm.chatui.internal.data.BrrmUser
 import eu.brrm.chatui.internal.network.data.RegisterBody
@@ -21,6 +22,7 @@ internal class ChatApiImpl(
         user: BrrmUser,
         group: BrrmGroup,
     ): Response<RegisterResponse> {
+        logInfo("Register")
         val appToken = storage.getToken()
             ?: throw IllegalArgumentException("SDK must be initialized and AppToken provided!")
         val registerUser = RegisterUser(
@@ -34,8 +36,7 @@ internal class ChatApiImpl(
         )
         val requestBody = RegisterBody(appToken, registerUser)
         val headers = mapOf("Content-Type" to "application/json")
-        val request =
-            Request.Post(path = "v1/appAuth", requestBody = requestBody, headers = headers)
+        val request = Request.Post(path = "v1/appAuth", requestBody = requestBody, headers = headers)
         val adapter = BaseAdapterImpl { json ->
             return@BaseAdapterImpl RegisterResponse.fromJson(json)
         }

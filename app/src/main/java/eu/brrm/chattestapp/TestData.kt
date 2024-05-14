@@ -5,9 +5,9 @@ import eu.brrm.chatui.internal.data.BrrmUser
 
 object TestData {
     val user1 = BrrmUser(
-        id = "0ff1074e-50d6-4b64-87aa-f14d83c2c088",
-        email = "android1@myauto.com",
-        name = "Android 1"
+        id = "e19af7c9-bb04-4dc0-bc78-551acc36f218",
+        email = "sekiprod@user.com",
+        name = "Semsudin Tafilovic"
     )
 
     val user2 = BrrmUser(
@@ -27,8 +27,8 @@ object TestData {
         name = "chat 1"
     )
     val group = BrrmGroup(
-        id = "e92d4539-25ca-4a19-b0fc-34d6e9ba08d8",
-        name = "CHAT TEST"
+        id = "1c0f2e00-6ae7-48a1-a1df-62c5e3138ad3",
+        name = "TEST DEALERSHIP"
     )
 
     val group2 = BrrmGroup(
