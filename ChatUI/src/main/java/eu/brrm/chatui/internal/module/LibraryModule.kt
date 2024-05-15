@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import eu.brrm.chatui.R
 import eu.brrm.chatui.internal.BrrmChatImpl
+import eu.brrm.chatui.internal.ChatEnvironment
 import eu.brrm.chatui.internal.network.ChatApi
 import eu.brrm.chatui.internal.network.ChatApiImpl
 import eu.brrm.chatui.internal.network.NetworkClient
@@ -20,13 +21,14 @@ import kotlinx.coroutines.Dispatchers
 internal object LibraryModule {
     private lateinit var mContext: Application
 
-    private lateinit var baseUrl: String
-
     private lateinit var chatUrl: String
-    fun init(context: Application) {
+    fun init(context: Application, chatEnvironment: ChatEnvironment) {
         this.mContext = context
-        this.baseUrl = context.getString(R.string.BRRM_CHAT_BASE_URL)
-        this.chatUrl = context.getString(R.string.CHAT_URL)
+        this.chatUrl =
+            if (chatEnvironment == ChatEnvironment.PRODUCTION)
+                context.getString(R.string.CHAT_API_PROD)
+            else
+                context.getString(R.string.CHAT_API_DEV)
     }
 
     private val mCoroutineScope: CoroutineScope by lazy {
@@ -48,7 +50,7 @@ internal object LibraryModule {
         DeviceServiceImpl(mContext, mCoroutineScope, mNotificationFactory)
     }
 
-    private val networkClient: NetworkClient by lazy { NetworkClientImpl(chatUrl, getStorage()) }
+    private val networkClient: NetworkClient by lazy { NetworkClientImpl(chatUrl) }
 
     fun deviceService(): DeviceService {
         return mDeviceService

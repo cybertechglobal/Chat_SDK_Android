@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import eu.brrm.chatui.internal.ChatEnvironment
 import eu.brrm.chatui.internal.data.BrrmGroup
 import eu.brrm.chatui.internal.data.BrrmUser
 import kotlinx.coroutines.flow.first
@@ -22,6 +23,7 @@ class PrefsStorageImpl(context: Context) : Storage {
     private val tokenKey = stringPreferencesKey("token")
     private val iconDrawableKey = intPreferencesKey("iconDrawableKey")
     private val iconColorKey = intPreferencesKey("iconColorKey")
+    private val chatEnvironmentKey = intPreferencesKey("chatEnvironment")
 
     override suspend fun getGroup(): BrrmGroup? {
         val data = dataStore.data.first()[groupKey]
@@ -68,5 +70,16 @@ class PrefsStorageImpl(context: Context) : Storage {
 
     override suspend fun getToken(): String? {
         return dataStore.data.first()[tokenKey]
+    }
+
+    override suspend fun saveEnvironment(chatEnvironment: ChatEnvironment) {
+        dataStore.edit {
+            it[chatEnvironmentKey] = chatEnvironment.value
+        }
+    }
+
+    override suspend fun getEnvironment(): ChatEnvironment {
+        val env = dataStore.data.first()[chatEnvironmentKey]
+        return if (env != null) ChatEnvironment.entries[env] else ChatEnvironment.PRODUCTION
     }
 }

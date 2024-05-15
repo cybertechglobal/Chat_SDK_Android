@@ -16,7 +16,9 @@ import eu.brrm.chatui.internal.bridge.ChatBroadcastReceiver
 import eu.brrm.chatui.internal.bridge.NativeInterface
 import eu.brrm.chatui.internal.bridge.NativeInterfaceImpl
 import eu.brrm.chatui.internal.data.ChatMessage
+import eu.brrm.chatui.internal.module.LibraryModule
 import eu.brrm.chatui.internal.permission.PermissionManager
+import eu.brrm.chatui.internal.storage.Storage
 import org.json.JSONObject
 
 internal class ChatListActivity : AppCompatActivity() {

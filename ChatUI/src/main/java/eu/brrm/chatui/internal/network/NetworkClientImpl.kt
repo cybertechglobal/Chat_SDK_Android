@@ -11,7 +11,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-internal class NetworkClientImpl(private val chatUrl: String, private val storage: Storage) :
+internal class NetworkClientImpl(private val chatUrl: String) :
     NetworkClient {
     @Suppress("BlockingMethodInNonBlockingContext")
     override suspend fun <T> execute(request: Request, adapter: Adapter<T>): Response<T> {

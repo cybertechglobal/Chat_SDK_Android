@@ -22,7 +22,8 @@ import kotlinx.coroutines.launch
 
 internal class BrrmChatImpl internal constructor(
     context: Application,
-    appToken: String? = null
+    appToken: String? = null,
+    chatEnvironment: ChatEnvironment
 ) : BrrmChat {
 
     private val TAG = BrrmChatImpl::class.java.name
@@ -37,13 +38,14 @@ internal class BrrmChatImpl internal constructor(
 
     init {
         logDebug("init()")
-        LibraryModule.init(context)
+        LibraryModule.init(context, chatEnvironment)
         coroutineScope = LibraryModule.coroutineScope()
         deviceService = LibraryModule.deviceService()
         storage = LibraryModule.getStorage()
         chatApi = LibraryModule.chatApi()
-        appToken?.let {
-            coroutineScope.launch {
+        coroutineScope.launch {
+            storage.saveEnvironment(chatEnvironment)
+            appToken?.let {
                 storage.saveToken(it)
             }
         }

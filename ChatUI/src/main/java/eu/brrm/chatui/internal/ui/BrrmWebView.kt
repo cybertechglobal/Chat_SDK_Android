@@ -10,26 +10,34 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import eu.brrm.chatui.R
+import eu.brrm.chatui.internal.ChatEnvironment
 import eu.brrm.chatui.internal.bridge.ChatChromeClient
 import eu.brrm.chatui.internal.bridge.ChatWebClient
 import eu.brrm.chatui.internal.bridge.JsInterface
 import eu.brrm.chatui.internal.bridge.NativeInterface
+import eu.brrm.chatui.internal.module.LibraryModule
 import eu.brrm.chatui.internal.permission.PermissionManager
+import eu.brrm.chatui.internal.storage.Storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @SuppressLint("SetJavaScriptEnabled", "ViewConstructor")
 internal class BrrmWebView(
     activity: FragmentActivity,
-    private val nativeInterface: NativeInterface,
-    private val permissionManager: PermissionManager
+    nativeInterface: NativeInterface,
+    permissionManager: PermissionManager,
 ) : WebView(activity.applicationContext), LifecycleEventObserver {
 
-    private val jsInterface: JsInterface
+    private val jsInterface: JsInterface = JsInterface(this, nativeInterface)
 
     private val lifecycleOwner: LifecycleOwner = activity
 
+    private val storage: Storage
+
     init {
-        jsInterface = JsInterface(this, nativeInterface)
         addJavascriptInterface(jsInterface, JsInterface.interfaceName)
         settings.apply {
             javaScriptEnabled = true
@@ -45,6 +53,8 @@ internal class BrrmWebView(
             settings.safeBrowsingEnabled = false
         }
 
+        storage = LibraryModule.getStorage()
+
         webViewClient = ChatWebClient()
 
         webChromeClient =
@@ -54,8 +64,17 @@ internal class BrrmWebView(
                 }
             })
 
-        val url = "${context.getString(R.string.BRRM_CHAT_BASE_URL)}?platform=android"
-        loadUrl(url)
+        lifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val chatEnvironment = storage.getEnvironment()
+            val widgetUrl = if (chatEnvironment == ChatEnvironment.PRODUCTION)
+                context.getString(R.string.CHAT_WIDGET_URL_PROD)
+            else
+                context.getString(R.string.CHAT_WIDGET_URL_DEV)
+            val url = "$widgetUrl?platform=android"
+            withContext(Dispatchers.Main) {
+                loadUrl(url)
+            }
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionManager.requestPermissions(listOf(Manifest.permission.POST_NOTIFICATIONS))

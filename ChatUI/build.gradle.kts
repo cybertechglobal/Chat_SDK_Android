@@ -11,11 +11,13 @@ android {
     namespace = "eu.brrm.chatui"
     compileSdk = 34
 
-    val DEV_BRRM_HOST: String = "https://devwidget.chat.brrm.eu"
-    val PROD_BRRM_HOST: String = "https://widget.chat.brrm.eu"
+    val CHAT_WIDGET_URL_DEV: String = "https://devwidget.chat.brrm.eu"
+    val CHAT_WIDGET_URL_PROD: String = "https://widget.chat.brrm.eu"
 
-    val DEV_CHAT_URL: String = "https://devapi.chat.brrm.eu/"
-    val PROD_CHAT_URL: String = "https://api.chat.brrm.eu/"
+    val CHAT_API_DEV: String = "https://devapi.chat.brrm.eu/"
+    val CHAT_API_PROD: String = "https://api.chat.brrm.eu/"
+
+
     defaultConfig {
         minSdk = 21
         version = 3
@@ -25,13 +27,16 @@ android {
         aarMetadata {
             minCompileSdk = 21
         }
+
+        resValue("string", "CHAT_WIDGET_URL_DEV", CHAT_WIDGET_URL_DEV)
+        resValue("string", "CHAT_WIDGET_URL_PROD", CHAT_WIDGET_URL_PROD)
+        resValue("string", "CHAT_API_DEV", CHAT_API_DEV)
+        resValue("string", "CHAT_API_PROD", CHAT_API_PROD)
+
     }
 
     buildTypes {
         debug {
-            //resValue("string", "BRRM_CHAT_HOST", DEV_BRRM_HOST)
-            resValue("string", "BRRM_CHAT_BASE_URL", DEV_BRRM_HOST)
-            resValue("string", "CHAT_URL", DEV_CHAT_URL)
         }
         release {
             isMinifyEnabled = false
@@ -39,9 +44,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            //resValue("string", "BRRM_CHAT_HOST", PROD_BRRM_HOST)
-            resValue("string", "BRRM_CHAT_BASE_URL", PROD_BRRM_HOST)
-            resValue("string", "CHAT_URL", PROD_CHAT_URL)
         }
     }
     compileOptions {

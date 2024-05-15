@@ -6,6 +6,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.google.firebase.messaging.RemoteMessage
 import eu.brrm.chatui.internal.BrrmChatImpl
+import eu.brrm.chatui.internal.ChatEnvironment
 import eu.brrm.chatui.internal.data.BrrmGroup
 import eu.brrm.chatui.internal.data.BrrmUser
 
@@ -42,9 +43,9 @@ interface BrrmChat {
 
         @JvmStatic
         @JvmName("init")
-        fun init(context: Context, appToken: String) {
+        fun init(context: Context, appToken: String, chatEnvironment: ChatEnvironment) {
             if (!this::_instance.isInitialized) {
-                _instance = BrrmChatImpl(context.applicationContext as Application, appToken)
+                _instance = BrrmChatImpl(context.applicationContext as Application, appToken, chatEnvironment)
             }
         }
     }

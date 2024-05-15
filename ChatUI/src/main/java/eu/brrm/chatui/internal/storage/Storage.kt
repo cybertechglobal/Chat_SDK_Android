@@ -2,6 +2,7 @@ package eu.brrm.chatui.internal.storage
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import eu.brrm.chatui.internal.ChatEnvironment
 import eu.brrm.chatui.internal.data.BrrmGroup
 import eu.brrm.chatui.internal.data.BrrmUser
 
@@ -21,4 +22,8 @@ interface Storage {
 
     suspend fun saveToken(token: String)
     suspend fun getToken(): String?
+
+    suspend fun saveEnvironment(chatEnvironment: ChatEnvironment)
+
+    suspend fun getEnvironment():ChatEnvironment
 }
